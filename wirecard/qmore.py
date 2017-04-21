@@ -1,7 +1,7 @@
 from collections import OrderedDict
 import hashlib
-from urllib import unquote
-from urlparse import parse_qsl
+from urllib.parse import unquote
+from urllib.parse import parse_qsl
 import requests
 from wirecard.adapters import SSLAdapter
 import ssl
@@ -54,7 +54,7 @@ class QMore:
         data = OrderedDict([(a, data[a]) for a in data if data[a] is not None])
 
         fingerprint = self.make_request_fingerprint(
-            data.values() + [self.secret])
+            list(data.values()) + [self.secret])
         data.update([('requestFingerprint', fingerprint),
                      ('iframeCssUrl', self.iframeCssUrl),])
         response = self.session.post(url, data, verify=self.verify)
@@ -116,9 +116,9 @@ class QMore:
         # remove unused optional values (None values)
         data = OrderedDict([(a, data[a]) for a in data if data[a] is not None])
 
-        data['requestFingerprintOrder'] = ','.join(data.keys() + ['secret'])
+        data['requestFingerprintOrder'] = ','.join(list(data.keys()) + ['secret'])
         fingerprint = self.make_request_fingerprint(
-            data.values() + [self.secret])
+            list(data.values()) + [self.secret])
         data.update([('requestFingerprint', fingerprint)])
 
         response = self.session.post(url, data, verify=self.verify)
@@ -173,7 +173,7 @@ class QMore:
         # remove unused optional values (None values)
         data = OrderedDict([(a, data[a]) for a in data if data[a] is not None])
 
-        fingerprint = self.make_request_fingerprint(data.values())
+        fingerprint = self.make_request_fingerprint(list(data.values()))
         data['requestFingerprint'] = fingerprint
         del data['secret']
         response = self.session.post(url, data, verify=self.verify)
